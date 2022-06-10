@@ -1,0 +1,671 @@
+local gui = game.CoreGui:FindFirstChild("GreyCat")
+if gui then
+else
+	local blocksmodule = require(game:GetService("ReplicatedStorage").SharedModules.Data.Blocks)
+	local moduleformat = require(game.ReplicatedStorage.LoadModule)
+	local format = moduleformat("FormatBigNumber")
+
+	local uselessores = {}
+		
+	for i, _ in pairs(blocksmodule) do
+		if string.find(i, "stone") or string.find(i, "dirt") then
+			table.insert(uselessores, i)
+		end
+	end
+
+	local ADSState = false
+
+	local function checktable(table, value)
+		for i, v in pairs(table) do
+			if v == value then
+				return true
+			end
+		end
+	end
+
+	local GreyCat = Instance.new("ScreenGui")
+	local Main = Instance.new("Frame")
+	local UICorner = Instance.new("UICorner")
+	local Container = Instance.new("Frame")
+	local UICorner_2 = Instance.new("UICorner")
+	local Backpack = Instance.new("TextLabel")
+	local Collapse = Instance.new("TextLabel")
+	local ADS = Instance.new("TextButton")
+	local UICorner_3 = Instance.new("UICorner")
+	local Switch = Instance.new("Frame")
+	local UICorner_4 = Instance.new("UICorner")
+	local Text = Instance.new("TextLabel")
+	local Settings = Instance.new("ImageButton")
+	local UIGradient = Instance.new("UIGradient")
+	local SettingsMain = Instance.new("Frame")
+	local UICorner_5 = Instance.new("UICorner")
+	local UIGradient_2 = Instance.new("UIGradient")
+	local Settings_2 = Instance.new("Frame")
+	local UICorner_6 = Instance.new("UICorner")
+	local Title = Instance.new("TextLabel")
+	local CloseFrame = Instance.new("Frame")
+	local Close = Instance.new("TextButton")
+	local UICorner_7 = Instance.new("UICorner")
+	local Cover1 = Instance.new("Frame")
+	local Cover2 = Instance.new("Frame")
+	local GradientToggle = Instance.new("TextButton")
+	local Switch_2 = Instance.new("Frame")
+	local UICorner_8 = Instance.new("UICorner")
+	local Text_2 = Instance.new("TextLabel")
+	local UICorner_9 = Instance.new("UICorner")
+
+	GreyCat.Name = "GreyCat"
+	GreyCat.Parent = game.CoreGui
+
+	Main.Name = "Main"
+	Main.Parent = GreyCat
+	Main.AnchorPoint = Vector2.new(0.5, 0.5)
+	Main.BackgroundColor3 = Color3.fromRGB(150, 150, 150)
+	Main.BorderSizePixel = 0
+	Main.Position = UDim2.new(0.5, 0, 0.5, 0)
+	Main.Size = UDim2.new(0, 210, 0, 86)
+
+	UICorner.CornerRadius = UDim.new(0, 14)
+	UICorner.Parent = Main
+
+	Container.Name = "Container"
+	Container.Parent = Main
+	Container.AnchorPoint = Vector2.new(0.5, 0.5)
+	Container.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+	Container.BorderSizePixel = 0
+	Container.Position = UDim2.new(0.5, 0, 0.5, 0)
+	Container.Size = UDim2.new(0, 204, 0, 80)
+
+	UICorner_2.CornerRadius = UDim.new(0, 12)
+	UICorner_2.Parent = Container
+
+	Backpack.Name = "Backpack"
+	Backpack.Parent = Container
+	Backpack.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	Backpack.BackgroundTransparency = 1.000
+	Backpack.Position = UDim2.new(0.0294117648, 0, 0, 0)
+	Backpack.Size = UDim2.new(0, 151, 0, 22)
+	Backpack.Font = Enum.Font.TitilliumWeb
+	Backpack.Text = "Backpack Value: 0"
+	Backpack.TextColor3 = Color3.fromRGB(170, 170, 170)
+	Backpack.TextScaled = true
+	Backpack.TextSize = 14.000
+	Backpack.TextWrapped = true
+	Backpack.TextXAlignment = Enum.TextXAlignment.Left
+	spawn(function()
+		repeat wait(0.1)
+			local finalworth = 0
+			local label = game:GetService("Players").LocalPlayer.PlayerGui.ScreenGui.HUD.Debug.Debug14.Label
+			local first = label.Text:sub(51)
+			local second = string.gsub(first, "</font>", "")
+
+			for _, v in pairs(game:GetService("Players").LocalPlayer.PlayerGui.ScreenGui.Inventory.Frame.Container.Ores.Content.Frame.Items:GetChildren()) do
+				if checktable(uselessores, v.Name) and ADSState == true then
+				else
+					if v:IsA("Frame") then
+						local amount = 0
+
+						if string.find(v.Frame.Amount.Text, "K") then
+							local postnumb = string.gsub(v.Frame.Amount.Text, "%a", "")
+
+							if not string.find(postnumb, "%p") then
+								local postnumb2 = string.gsub(postnumb, "%p", "")
+								amount = tonumber(postnumb2) * 1000
+							elseif postnumb:sub(-2, -2) == "." then
+								local postnumb2 = string.gsub(postnumb, "%p", "")
+								amount = tonumber(postnumb2) * 100
+							else
+								local postnumb2 = string.gsub(postnumb, "%p", "")
+								amount = tonumber(postnumb2) * 10
+							end
+						else
+							amount = v.Frame.Amount.Text:sub(2)
+						end
+
+						local ore = v.Name
+
+						for i, _ in pairs(blocksmodule) do
+							if i == ore then
+								local worth = blocksmodule["".. i].Value[2] * amount
+								finalworth = finalworth + worth
+							end
+						end
+					end
+				end
+			end
+
+			local numbtoformat = math.floor(finalworth * tonumber(second) + 0.5)
+			local output = format(numbtoformat)
+
+			Backpack.Text = "Backpack Value: ".. output
+		until false
+	end)
+
+	Collapse.Name = "Collapse"
+	Collapse.Parent = Container
+	Collapse.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	Collapse.BackgroundTransparency = 1.000
+	Collapse.Position = UDim2.new(0.0290000774, 0, 0.224999994, 0)
+	Collapse.Size = UDim2.new(0, 152, 0, 19)
+	Collapse.Font = Enum.Font.TitilliumWeb
+	Collapse.Text = "Blocks till collapse: 0"
+	Collapse.TextColor3 = Color3.fromRGB(170, 170, 170)
+	Collapse.TextScaled = true
+	Collapse.TextSize = 14.000
+	Collapse.TextWrapped = true
+	Collapse.TextXAlignment = Enum.TextXAlignment.Left
+	spawn(function()
+		repeat wait(0.1)
+			local text = string.gsub(game:GetService("Workspace").Worlds["The Overworld"].Sign.Display.SurfaceGui.Info.Text, "[%p%a]", "")
+			Collapse.Text = "Blocks till collapse: ".. format(tonumber(text))
+		until false
+	end)
+
+	ADS.Name = "ADS"
+	ADS.Parent = Container
+	ADS.AnchorPoint = Vector2.new(0.5, 0.5)
+	ADS.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+	ADS.BorderColor3 = Color3.fromRGB(27, 42, 53)
+	ADS.Position = UDim2.new(0.5, 0, 0.720000029, 0)
+	ADS.Size = UDim2.new(0, 191, 0, 32)
+	ADS.AutoButtonColor = false
+	ADS.Font = Enum.Font.SourceSans
+	ADS.Text = ""
+	ADS.TextColor3 = Color3.fromRGB(111, 111, 111)
+	ADS.TextScaled = true
+	ADS.TextSize = 14.000
+	ADS.TextWrapped = true
+	local ADSLoop;
+	ADS.MouseButton1Down:Connect(function()
+		if not ADSState then
+			ADSState = true
+			ADSLoop = game:GetService("RunService").RenderStepped:Connect(function()
+				game:GetService("ReplicatedStorage").Events.MultiDeleteOres:FireServer(uselessores)
+			end)
+		elseif ADSState then
+			ADSState = false
+			if ADSLoop then
+				ADSLoop:Disconnect()
+			end
+		end
+	end)
+
+	UICorner_3.Parent = ADS
+
+	Switch.Name = "Switch"
+	Switch.Parent = ADS
+	Switch.BackgroundColor3 = Color3.fromRGB(170, 0, 0)
+	Switch.BorderSizePixel = 0
+	Switch.Position = UDim2.new(0.874000013, 0, 0.245000005, 0)
+	Switch.Size = UDim2.new(0, 17, 0, 17)
+
+	UICorner_4.CornerRadius = UDim.new(0, 5)
+	UICorner_4.Parent = Switch
+
+	Text.Name = "Text"
+	Text.Parent = ADS
+	Text.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	Text.BackgroundTransparency = 1.000
+	Text.BorderSizePixel = 0
+	Text.Position = UDim2.new(0, 8, 0, 1)
+	Text.Size = UDim2.new(0, 144, 0, 30)
+	Text.ZIndex = 7
+	Text.Font = Enum.Font.TitilliumWeb
+	Text.LineHeight = 1.130
+	Text.Text = "Auto Delete Stone"
+	Text.TextColor3 = Color3.fromRGB(111, 111, 111)
+	Text.TextScaled = true
+	Text.TextSize = 14.000
+	Text.TextWrapped = true
+	Text.TextXAlignment = Enum.TextXAlignment.Left
+
+	Settings.Name = "Settings"
+	Settings.Parent = Container
+	Settings.Active = false
+	Settings.BackgroundTransparency = 1.000
+	Settings.Position = UDim2.new(0.81400001, 0, 0.0500000007, 0)
+	Settings.Selectable = false
+	Settings.Size = UDim2.new(0, 30, 0, 30)
+	Settings.Image = "rbxassetid://3605022185"
+	Settings.ImageColor3 = Color3.fromRGB(39, 39, 39)
+	Settings.ScaleType = Enum.ScaleType.Fit
+
+	UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.fromRGB(98, 83, 255)), ColorSequenceKeypoint.new(0.71, Color3.fromRGB(90, 195, 255)), ColorSequenceKeypoint.new(1.00, Color3.fromRGB(183, 138, 255))}
+	UIGradient.Transparency = NumberSequence.new{NumberSequenceKeypoint.new(0.00, 0.00), NumberSequenceKeypoint.new(0.28, 0.00), NumberSequenceKeypoint.new(1.00, 0.00)}
+	UIGradient.Parent = Main
+
+	SettingsMain.Name = "SettingsMain"
+	SettingsMain.Parent = GreyCat
+	SettingsMain.AnchorPoint = Vector2.new(0.5, 0.5)
+	SettingsMain.BackgroundColor3 = Color3.fromRGB(150, 150, 150)
+	SettingsMain.BorderSizePixel = 0
+	SettingsMain.Position = UDim2.new(0.5, 0, 1.29999995, 0)
+	SettingsMain.Size = UDim2.new(0, 256, 0, 275)
+	SettingsMain.ZIndex = 9
+
+	UICorner_5.CornerRadius = UDim.new(0, 14)
+	UICorner_5.Parent = SettingsMain
+
+	UIGradient_2.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.fromRGB(98, 83, 255)), ColorSequenceKeypoint.new(0.71, Color3.fromRGB(90, 195, 255)), ColorSequenceKeypoint.new(1.00, Color3.fromRGB(183, 138, 255))}
+	UIGradient_2.Transparency = NumberSequence.new{NumberSequenceKeypoint.new(0.00, 0.00), NumberSequenceKeypoint.new(0.28, 0.00), NumberSequenceKeypoint.new(1.00, 0.00)}
+	UIGradient_2.Parent = SettingsMain
+
+	Settings_2.Name = "Settings"
+	Settings_2.Parent = SettingsMain
+	Settings_2.AnchorPoint = Vector2.new(0.5, 0.5)
+	Settings_2.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+	Settings_2.BorderSizePixel = 0
+	Settings_2.Position = UDim2.new(0.5, 0, 0.5, 0)
+	Settings_2.Size = UDim2.new(0, 250, 0, 269)
+	Settings_2.ZIndex = 10
+
+	UICorner_6.CornerRadius = UDim.new(0, 12)
+	UICorner_6.Parent = Settings_2
+
+	Title.Name = "Title"
+	Title.Parent = Settings_2
+	Title.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	Title.BackgroundTransparency = 1.000
+	Title.Position = UDim2.new(0.0450000018, 0, 0.0199999996, 0)
+	Title.Size = UDim2.new(0.544174731, 0, 0.108835243, 0)
+	Title.ZIndex = 11
+	Title.Font = Enum.Font.GothamMedium
+	Title.Text = "SETTINGS"
+	Title.TextColor3 = Color3.fromRGB(255, 255, 255)
+	Title.TextScaled = true
+	Title.TextSize = 14.000
+	Title.TextWrapped = true
+
+	CloseFrame.Name = "CloseFrame"
+	CloseFrame.Parent = Settings_2
+	CloseFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+	CloseFrame.BorderSizePixel = 0
+	CloseFrame.Position = UDim2.new(0.26699999, 0, 0.888999999, 0)
+	CloseFrame.Size = UDim2.new(0.459265828, 0, 0.112577006, 0)
+	CloseFrame.ZIndex = 11
+
+	Close.Name = "Close"
+	Close.Parent = CloseFrame
+	Close.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	Close.BackgroundTransparency = 1.000
+	Close.Position = UDim2.new(0.100000001, 0, 0.187000006, 0)
+	Close.Size = UDim2.new(0.786139011, 0, 0.786310613, 0)
+	Close.ZIndex = 12
+	Close.Font = Enum.Font.Gotham
+	Close.Text = "CLOSE"
+	Close.TextColor3 = Color3.fromRGB(255, 255, 255)
+	Close.TextScaled = true
+	Close.TextSize = 14.000
+	Close.TextWrapped = true
+
+	UICorner_7.CornerRadius = UDim.new(0, 12)
+	UICorner_7.Parent = CloseFrame
+
+	Cover1.Name = "Cover1"
+	Cover1.Parent = CloseFrame
+	Cover1.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+	Cover1.BorderSizePixel = 0
+	Cover1.Position = UDim2.new(0, 0, 0.588235378, 0)
+	Cover1.Size = UDim2.new(0.107142866, 0, 0.411764711, 0)
+	Cover1.ZIndex = 11
+
+	Cover2.Name = "Cover2"
+	Cover2.Parent = CloseFrame
+	Cover2.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+	Cover2.BorderSizePixel = 0
+	Cover2.Position = UDim2.new(0.892857134, 0, 0.588235378, 0)
+	Cover2.Size = UDim2.new(0.107142866, 0, 0.411764711, 0)
+	Cover2.ZIndex = 11
+
+	GradientToggle.Name = "GradientToggle"
+	GradientToggle.Parent = Settings_2
+	GradientToggle.AnchorPoint = Vector2.new(0.5, 0.5)
+	GradientToggle.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+	GradientToggle.BorderColor3 = Color3.fromRGB(27, 42, 53)
+	GradientToggle.Position = UDim2.new(0.496721417, 0, 0.220988333, 0)
+	GradientToggle.Size = UDim2.new(0, 234, 0, 36)
+	GradientToggle.ZIndex = 12
+	GradientToggle.AutoButtonColor = false
+	GradientToggle.Font = Enum.Font.SourceSans
+	GradientToggle.Text = ""
+	GradientToggle.TextColor3 = Color3.fromRGB(111, 111, 111)
+	GradientToggle.TextScaled = true
+	GradientToggle.TextSize = 14.000
+	GradientToggle.TextWrapped = true
+
+	Switch_2.Name = "Switch"
+	Switch_2.Parent = GradientToggle
+	Switch_2.BackgroundColor3 = Color3.fromRGB(0, 112, 1)
+	Switch_2.BorderSizePixel = 0
+	Switch_2.Position = UDim2.new(0.881452978, 0, 0.229222223, 0)
+	Switch_2.Size = UDim2.new(0, 19, 0, 19)
+	Switch_2.ZIndex = 12
+
+	UICorner_8.CornerRadius = UDim.new(0, 5)
+	UICorner_8.Parent = Switch_2
+
+	Text_2.Name = "Text"
+	Text_2.Parent = GradientToggle
+	Text_2.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	Text_2.BackgroundTransparency = 1.000
+	Text_2.BorderSizePixel = 0
+	Text_2.Position = UDim2.new(0, 9, 0, 1)
+	Text_2.Size = UDim2.new(0, 187, 0, 36)
+	Text_2.ZIndex = 12
+	Text_2.Font = Enum.Font.TitilliumWeb
+	Text_2.LineHeight = 1.130
+	Text_2.Text = "Toggle Gradients"
+	Text_2.TextColor3 = Color3.fromRGB(111, 111, 111)
+	Text_2.TextScaled = true
+	Text_2.TextSize = 14.000
+	Text_2.TextWrapped = true
+	Text_2.TextXAlignment = Enum.TextXAlignment.Left
+
+	UICorner_9.Parent = GradientToggle
+
+	-- Scripts:
+
+	local function CBYO_fake_script() -- Main.LocalScript 
+		local script = Instance.new('LocalScript', Main)
+
+		local UserInputService = game:GetService("UserInputService")
+		
+		local gui = script.Parent
+		
+		local dragging
+		local dragInput
+		local dragStart
+		local startPos
+		
+		local function update(input)
+			local delta = input.Position - dragStart
+			gui.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+		end
+		
+		gui.InputBegan:Connect(function(input)
+			if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+				dragging = true
+				dragStart = input.Position
+				startPos = gui.Position
+		
+				input.Changed:Connect(function()
+					if input.UserInputState == Enum.UserInputState.End then
+						dragging = false
+					end
+				end)
+			end
+		end)
+		
+		gui.InputChanged:Connect(function(input)
+			if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+				dragInput = input
+			end
+		end)
+		
+		UserInputService.InputChanged:Connect(function(input)
+			if input == dragInput and dragging then
+				update(input)
+			end
+		end)
+	end
+	coroutine.wrap(CBYO_fake_script)()
+	local function EDJWRUF_fake_script() -- UICorner_3.LocalScript 
+		local script = Instance.new('LocalScript', UICorner_3)
+
+		local Button = script.Parent.Parent
+		local Corner = script.Parent
+		local TweenService = game:GetService("TweenService")
+		
+		Button.MouseButton1Down:Connect(function()
+			local time = 0.2
+			local tween = TweenService:Create(Corner, TweenInfo.new(time), {CornerRadius = UDim.new(0, 5)})
+			tween:Play()
+			tween.Completed:wait()
+			local tween2 = TweenService:Create(Corner, TweenInfo.new(time), {CornerRadius = UDim.new(0, 8)})
+			tween2:Play()
+		end)
+	end
+	coroutine.wrap(EDJWRUF_fake_script)()
+	local function OFGEVPB_fake_script() -- ADS.LocalScript 
+		local script = Instance.new('LocalScript', ADS)
+
+		local TweenService = game:GetService("TweenService")
+		
+		script.Parent.MouseButton1Down:Connect(function()
+			local time = 0.2
+			local tween = TweenService:Create(script.Parent, TweenInfo.new(time), {BackgroundColor3 = Color3.fromRGB(50, 50, 50)})
+			tween:Play()
+			tween.Completed:wait()
+			local tween2 = TweenService:Create(script.Parent, TweenInfo.new(time), {BackgroundColor3 = Color3.fromRGB(30, 30, 30)})
+			tween2:Play()
+		end)
+	end
+	coroutine.wrap(OFGEVPB_fake_script)()
+	local function ZCZPFV_fake_script() -- ADS.LocalScript 
+		local script = Instance.new('LocalScript', ADS)
+
+		local Toggle = script.Parent.Switch
+		local value = false
+		local TweenService = game:GetService("TweenService")
+		local time = 0.4
+		
+		script.Parent.MouseButton1Down:Connect(function()
+			if value then
+				value = false
+				
+				local tween = TweenService:Create(Toggle, TweenInfo.new(time), {BackgroundColor3 = Color3.fromRGB(112, 0, 1)})
+				tween:Play()
+			else
+				local tween = TweenService:Create(Toggle, TweenInfo.new(time), {BackgroundColor3 = Color3.fromRGB(0, 112, 1)})
+				tween:Play()
+				value = true
+			end
+		end)
+	end
+	coroutine.wrap(ZCZPFV_fake_script)()
+	local function OHQTJM_fake_script() -- Settings.LocalScript 
+		local script = Instance.new('LocalScript', Settings)
+
+		local btn = script.Parent
+		local frame = script.Parent.Parent.Parent.Parent.SettingsMain
+		local left = false
+		
+		btn.MouseButton1Down:Connect(function()
+			spawn(function()
+				local function tweenfunc()
+					if _G.OpenFrame == frame then
+						local tween = game:GetService("TweenService"):Create(frame, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {Position = UDim2.new(0.5, 0, 1.3, 0)})
+						tween:Play()
+						_G.OpenFrame = nil
+					else
+						local tween = game:GetService("TweenService"):Create(frame, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Position = UDim2.new(0.5, 0, 0.5, 0)})
+						tween:Play()
+						_G.OpenFrame = frame
+					end
+				end
+		
+				if _G.OpenFrame == nil or _G.OpenFrame == frame then
+					tweenfunc()
+				else
+					local tween = game:GetService("TweenService"):Create(_G.OpenFrame, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {Position = UDim2.new(0.5, 0, 1.3, 0)})
+					tween:Play()
+					_G.OpenFrame = nil
+					tween.Completed:Wait()
+					wait(0.2)
+					tweenfunc()
+				end
+			end)
+			
+			local tween = game:GetService("TweenService"):Create(btn, TweenInfo.new(0.2), {Rotation = 45})
+			tween:Play()
+			tween.Completed:Wait()
+			if left then
+				local tween = game:GetService("TweenService"):Create(btn, TweenInfo.new(0.2), {Rotation = 0})
+				tween:Play()
+			else
+				local tween = game:GetService("TweenService"):Create(btn, TweenInfo.new(0.2), {Rotation = 90})
+				tween:Play()
+			end
+		end)
+		
+		btn.MouseEnter:Connect(function()
+			left = false
+			local tween = game:GetService("TweenService"):Create(btn, TweenInfo.new(0.2), {Rotation = 90})
+			tween:Play()
+		end)
+		
+		btn.MouseLeave:Connect(function()
+			left = true
+			local tween = game:GetService("TweenService"):Create(btn, TweenInfo.new(0.2), {Rotation = 0})
+			tween:Play()
+		end)
+	end
+	coroutine.wrap(OHQTJM_fake_script)()
+	local function TEMNIF_fake_script() -- UIGradient.LocalScript 
+		local script = Instance.new('LocalScript', UIGradient)
+
+		local gradient = script.Parent
+		
+		repeat wait()
+			gradient.Rotation = gradient.Rotation + 2.25
+		until false
+	end
+	coroutine.wrap(TEMNIF_fake_script)()
+	local function IOLUJ_fake_script() -- UIGradient_2.LocalScript 
+		local script = Instance.new('LocalScript', UIGradient_2)
+
+		local gradient = script.Parent
+		
+		repeat wait()
+			gradient.Rotation = gradient.Rotation + 2.25
+		until false
+	end
+	coroutine.wrap(IOLUJ_fake_script)()
+	local function IQDA_fake_script() -- Close.LocalScript 
+		local script = Instance.new('LocalScript', Close)
+
+		local btn = script.Parent
+		local frame = script.Parent.Parent.Parent.Parent
+		local TweenService = game:GetService("TweenService")
+		local time = 0.2
+		local left = false
+		
+		btn.MouseButton1Down:Connect(function()
+			spawn(function()
+				local function tweenfunc()
+					if _G.OpenFrame == frame then
+						local tween = TweenService:Create(frame, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {Position = UDim2.new(0.5, 0, 1.3, 0)})
+						tween:Play()
+						_G.OpenFrame = nil
+					else
+						local tween = TweenService:Create(frame, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Position = UDim2.new(0.5, 0, 0.5, 0)})
+						tween:Play()
+						_G.OpenFrame = frame
+					end
+				end
+		
+				if _G.OpenFrame == nil or _G.OpenFrame == frame then
+					tweenfunc()
+				else
+					local tween = TweenService:Create(_G.OpenFrame, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {Position = UDim2.new(0.5, 0, 1.3, 0)})
+					tween:Play()
+					_G.OpenFrame = nil
+					tween.Completed:Wait()
+					wait(0.2)
+					tweenfunc()
+				end
+			end)
+			
+			local tween = TweenService:Create(btn, TweenInfo.new(time), {TextColor3 = Color3.fromRGB(90, 90, 90)})
+			tween:Play()
+			tween.Completed:Wait()
+			if left then
+				local tween = TweenService:Create(btn, TweenInfo.new(time), {TextColor3 = Color3.fromRGB(255, 255, 255)})
+				tween:Play()
+			else
+				local tween = TweenService:Create(btn, TweenInfo.new(time), {TextColor3 = Color3.fromRGB(140, 140, 140)})
+				tween:Play()
+			end
+		end)
+		
+		btn.MouseEnter:Connect(function()
+			left = false
+			local tween = TweenService:Create(btn, TweenInfo.new(time), {TextColor3 = Color3.fromRGB(140, 140, 140)})
+			tween:Play()
+		end)
+		
+		btn.MouseLeave:Connect(function()
+			left = true
+			local tween = TweenService:Create(btn, TweenInfo.new(time), {TextColor3 = Color3.fromRGB(255, 255, 255)})
+			tween:Play()
+		end)
+	end
+	coroutine.wrap(IQDA_fake_script)()
+	local function UTKRAKD_fake_script() -- GradientToggle.LocalScript 
+		local script = Instance.new('LocalScript', GradientToggle)
+
+		local TweenService = game:GetService("TweenService")
+		
+		script.Parent.MouseButton1Down:Connect(function()
+			local time = 0.2
+			local tween = TweenService:Create(script.Parent, TweenInfo.new(time), {BackgroundColor3 = Color3.fromRGB(50, 50, 50)})
+			tween:Play()
+			tween.Completed:wait()
+			local tween2 = TweenService:Create(script.Parent, TweenInfo.new(time), {BackgroundColor3 = Color3.fromRGB(30, 30, 30)})
+			tween2:Play()
+		end)
+	end
+	coroutine.wrap(UTKRAKD_fake_script)()
+	local function YTFTSC_fake_script() -- GradientToggle.LocalScript 
+		local script = Instance.new('LocalScript', GradientToggle)
+
+		local Toggle = script.Parent.Switch
+		local value = true
+		local TweenService = game:GetService("TweenService")
+		local gradient1 = script.Parent.Parent.Parent.UIGradient
+		local gradient2 = script.Parent.Parent.Parent.Parent.Main.UIGradient
+		local time = 0.4
+		
+		script.Parent.MouseButton1Down:Connect(function()
+			if value then
+				value = false
+				
+				local tween = TweenService:Create(Toggle, TweenInfo.new(time), {BackgroundColor3 = Color3.fromRGB(112, 0, 1)})
+				tween:Play()
+				
+				gradient1.Enabled = false
+				gradient2.Enabled = false
+				gradient1.Parent.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+				gradient2.Parent.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+			else
+				local tween = TweenService:Create(Toggle, TweenInfo.new(time), {BackgroundColor3 = Color3.fromRGB(0, 112, 1)})
+				tween:Play()
+				
+				gradient1.Enabled = true
+				gradient2.Enabled = true
+				gradient1.Parent.BackgroundColor3 = Color3.fromRGB(150, 150, 150)
+				gradient2.Parent.BackgroundColor3 = Color3.fromRGB(150, 150, 150)
+				
+				value = true
+			end
+		end)
+	end
+	coroutine.wrap(YTFTSC_fake_script)()
+	local function WSORH_fake_script() -- UICorner_9.LocalScript 
+		local script = Instance.new('LocalScript', UICorner_9)
+
+		local Button = script.Parent.Parent
+		local Corner = script.Parent
+		local TweenService = game:GetService("TweenService")
+		
+		Button.MouseButton1Down:Connect(function()
+			local time = 0.2
+			local tween = TweenService:Create(Corner, TweenInfo.new(time), {CornerRadius = UDim.new(0, 5)})
+			tween:Play()
+			tween.Completed:wait()
+			local tween2 = TweenService:Create(Corner, TweenInfo.new(time), {CornerRadius = UDim.new(0, 8)})
+			tween2:Play()
+		end)
+	end
+	coroutine.wrap(WSORH_fake_script)()
+end
