@@ -1,8 +1,11 @@
 local gui = game.CoreGui:FindFirstChild("GreyCat")
 if gui then
 else
+	local Player = game.Players.LocalPlayer
 	local blocksmodule = require(game:GetService("ReplicatedStorage").SharedModules.Data.Blocks)
 	local moduleformat = require(game.ReplicatedStorage.LoadModule)
+	local LocalData = moduleformat("LocalData")
+	local CurrencyMulti = moduleformat("GetCurrencyMultiplier")
 	local format = moduleformat("FormatBigNumber")
 
 	local uselessores = {}
@@ -23,6 +26,22 @@ else
 		end
 	end
 
+	local function checkifcyber(value)
+		local check = false
+
+		for i, _ in pairs(blocksmodule) do
+			if blocksmodule["".. value].Value[1] == "CyberTokens" then
+				check = true
+			end
+		end
+
+		if check then
+			return true
+		else
+			return false
+		end
+	end
+
 	local GreyCat = Instance.new("ScreenGui")
 	local Main = Instance.new("Frame")
 	local UICorner = Instance.new("UICorner")
@@ -36,6 +55,7 @@ else
 	local UICorner_4 = Instance.new("UICorner")
 	local Text = Instance.new("TextLabel")
 	local Settings = Instance.new("ImageButton")
+	local BackpackCyber = Instance.new("TextLabel")
 	local UIGradient = Instance.new("UIGradient")
 	local SettingsMain = Instance.new("Frame")
 	local UICorner_5 = Instance.new("UICorner")
@@ -63,7 +83,7 @@ else
 	Main.BackgroundColor3 = Color3.fromRGB(150, 150, 150)
 	Main.BorderSizePixel = 0
 	Main.Position = UDim2.new(0.5, 0, 0.5, 0)
-	Main.Size = UDim2.new(0, 210, 0, 86)
+	Main.Size = UDim2.new(0, 210, 0, 106)
 
 	UICorner.CornerRadius = UDim.new(0, 14)
 	UICorner.Parent = Main
@@ -74,7 +94,7 @@ else
 	Container.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
 	Container.BorderSizePixel = 0
 	Container.Position = UDim2.new(0.5, 0, 0.5, 0)
-	Container.Size = UDim2.new(0, 204, 0, 80)
+	Container.Size = UDim2.new(0, 204, 0, 100)
 
 	UICorner_2.CornerRadius = UDim.new(0, 12)
 	UICorner_2.Parent = Container
@@ -83,7 +103,7 @@ else
 	Backpack.Parent = Container
 	Backpack.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 	Backpack.BackgroundTransparency = 1.000
-	Backpack.Position = UDim2.new(0.0294117648, 0, 0, 0)
+	Backpack.Position = UDim2.new(0.0289999992, 0, 0.180000007, 0)
 	Backpack.Size = UDim2.new(0, 151, 0, 22)
 	Backpack.Font = Enum.Font.TitilliumWeb
 	Backpack.Text = "Backpack Value: 0"
@@ -92,12 +112,26 @@ else
 	Backpack.TextSize = 14.000
 	Backpack.TextWrapped = true
 	Backpack.TextXAlignment = Enum.TextXAlignment.Left
+
+	BackpackCyber.Name = "BackpackCyber"
+	BackpackCyber.Parent = Container
+	BackpackCyber.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	BackpackCyber.BackgroundTransparency = 1.000
+	BackpackCyber.Position = UDim2.new(0.0294117648, 0, 0, 0)
+	BackpackCyber.Size = UDim2.new(0, 151, 0, 22)
+	BackpackCyber.Font = Enum.Font.TitilliumWeb
+	BackpackCyber.Text = "Cyber Value: 0"
+	BackpackCyber.TextColor3 = Color3.fromRGB(170, 170, 170)
+	BackpackCyber.TextScaled = true
+	BackpackCyber.TextSize = 14.000
+	BackpackCyber.TextWrapped = true
+	BackpackCyber.TextXAlignment = Enum.TextXAlignment.Left
 	spawn(function()
 		repeat wait(0.1)
 			local finalworth = 0
-			local label = game:GetService("Players").LocalPlayer.PlayerGui.ScreenGui.HUD.Debug.Debug14.Label
-			local first = label.Text:sub(51)
-			local second = string.gsub(first, "</font>", "")
+			local cyberfinalworth = 0
+			local multiCoins = CurrencyMulti(Player, "Coins", LocalData:GetData("Passes"), LocalData:GetData("GemEnchantments"))
+			local multiCyber = CurrencyMulti(Player, "CyberTokens", LocalData:GetData("Passes"), LocalData:GetData("GemEnchantments"))
 
 			for _, v in pairs(game:GetService("Players").LocalPlayer.PlayerGui.ScreenGui.Inventory.Frame.Container.Ores.Content.Frame.Items:GetChildren()) do
 				if checktable(uselessores, v.Name) and ADSState == true then
@@ -124,20 +158,24 @@ else
 
 						local ore = v.Name
 
-						for i, _ in pairs(blocksmodule) do
-							if i == ore then
-								local worth = blocksmodule["".. i].Value[2] * amount
-								finalworth = finalworth + worth
-							end
+						if checkifcyber(ore) == true then
+							local cyberworth = blocksmodule["".. ore].Value[2] * amount
+							cyberfinalworth = cyberfinalworth + cyberworth
+						else
+							local worth = blocksmodule["".. ore].Value[2] * amount
+							finalworth = finalworth + worth
 						end
 					end
 				end
 			end
 
-			local numbtoformat = math.floor(finalworth * tonumber(second) + 0.5)
+			local numbtoformat = math.floor(finalworth * tonumber(multiCoins) + 0.5)
+			local cyberformat = math.floor(cyberfinalworth * tonumber(multiCyber) + 0.5)
 			local output = format(numbtoformat)
+			local cyberoutput = format(cyberformat)
 
 			Backpack.Text = "Backpack Value: ".. output
+			BackpackCyber.Text = "Cyber Value: ".. cyberoutput
 		until false
 	end)
 
@@ -145,8 +183,8 @@ else
 	Collapse.Parent = Container
 	Collapse.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 	Collapse.BackgroundTransparency = 1.000
-	Collapse.Position = UDim2.new(0.0290000774, 0, 0.224999994, 0)
-	Collapse.Size = UDim2.new(0, 152, 0, 19)
+	Collapse.Position = UDim2.new(0.0290000774, 0, 0.36500001, 0)
+	Collapse.Size = UDim2.new(0, 152, 0, 22)
 	Collapse.Font = Enum.Font.TitilliumWeb
 	Collapse.Text = "Blocks till collapse: 0"
 	Collapse.TextColor3 = Color3.fromRGB(170, 170, 170)
@@ -166,7 +204,7 @@ else
 	ADS.AnchorPoint = Vector2.new(0.5, 0.5)
 	ADS.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
 	ADS.BorderColor3 = Color3.fromRGB(27, 42, 53)
-	ADS.Position = UDim2.new(0.5, 0, 0.720000029, 0)
+	ADS.Position = UDim2.new(0.5, 0, 0.780000031, 0)
 	ADS.Size = UDim2.new(0, 191, 0, 32)
 	ADS.AutoButtonColor = false
 	ADS.Font = Enum.Font.SourceSans
@@ -223,7 +261,7 @@ else
 	Settings.Parent = Container
 	Settings.Active = false
 	Settings.BackgroundTransparency = 1.000
-	Settings.Position = UDim2.new(0.81400001, 0, 0.0500000007, 0)
+	Settings.Position = UDim2.new(0.818901956, 0, 0.0600000024, 0)
 	Settings.Selectable = false
 	Settings.Size = UDim2.new(0, 30, 0, 30)
 	Settings.Image = "rbxassetid://3605022185"
