@@ -396,74 +396,72 @@ if not gui then
 	BackpackCyber.TextSize = 14.000
 	BackpackCyber.TextWrapped = true
 	BackpackCyber.TextXAlignment = Enum.TextXAlignment.Left
-	spawn(function()
-		repeat wait(0.1)
-			local finalworth = 0
-			local cyberfinalworth = 0
-			local multiCoins = CurrencyMulti(Player, "Coins", LocalData:GetData("Passes"), LocalData:GetData("GemEnchantments"))
-			local multiCyber = CurrencyMulti(Player, "CyberTokens", LocalData:GetData("Passes"), LocalData:GetData("GemEnchantments"))
+	game:GetService("RunService").RenderStepped:Connect(function()
+		local finalworth = 0
+		local cyberfinalworth = 0
+		local multiCoins = CurrencyMulti(Player, "Coins", LocalData:GetData("Passes"), LocalData:GetData("GemEnchantments"))
+		local multiCyber = CurrencyMulti(Player, "CyberTokens", LocalData:GetData("Passes"), LocalData:GetData("GemEnchantments"))
 
-			for _, v in pairs(game:GetService("Players").LocalPlayer.PlayerGui.ScreenGui.Inventory.Frame.Container.Ores.Content.Frame.Items:GetChildren()) do
-				if checktable(uselessores, v.Name) and ADSState == true then
-				else
-					if v:IsA("Frame") then
-						local amount = 0
+		for _, v in pairs(game:GetService("Players").LocalPlayer.PlayerGui.ScreenGui.Inventory.Frame.Container.Ores.Content.Frame.Items:GetChildren()) do
+			if checktable(uselessores, v.Name) and ADSState == true then
+			else
+				if v:IsA("Frame") then
+					local amount = 0
 
-						if string.find(v.Frame.Amount.Text, "K") then
-							local postnumb = string.gsub(v.Frame.Amount.Text, "%a", "")
+					if string.find(v.Frame.Amount.Text, "K") then
+						local postnumb = string.gsub(v.Frame.Amount.Text, "%a", "")
 
-							if not string.find(postnumb, "%p") then
-								local postnumb2 = string.gsub(postnumb, "%p", "")
-								amount = tonumber(postnumb2) * 1000
-							elseif postnumb:sub(-2, -2) == "." then
-								local postnumb2 = string.gsub(postnumb, "%p", "")
-								amount = tonumber(postnumb2) * 100
-							else
-								local postnumb2 = string.gsub(postnumb, "%p", "")
-								amount = tonumber(postnumb2) * 10
-							end
+						if not string.find(postnumb, "%p") then
+							local postnumb2 = string.gsub(postnumb, "%p", "")
+							amount = tonumber(postnumb2) * 1000
+						elseif postnumb:sub(-2, -2) == "." then
+							local postnumb2 = string.gsub(postnumb, "%p", "")
+							amount = tonumber(postnumb2) * 100
 						else
-							amount = v.Frame.Amount.Text:sub(2)
+							local postnumb2 = string.gsub(postnumb, "%p", "")
+							amount = tonumber(postnumb2) * 10
 						end
+					else
+						amount = v.Frame.Amount.Text:sub(2)
+					end
 
-						local ore = v.Name
+					local ore = v.Name
 
-						if checkifcyber(ore) == true then
-							local cyberworth = blocksmodule["".. ore].Value[2] * amount
-							cyberfinalworth = cyberfinalworth + cyberworth
-						else
-							local worth = blocksmodule["".. ore].Value[2] * amount
-							finalworth = finalworth + worth
-						end
+					if checkifcyber(ore) == true then
+						local cyberworth = blocksmodule["".. ore].Value[2] * amount
+						cyberfinalworth = cyberfinalworth + cyberworth
+					else
+						local worth = blocksmodule["".. ore].Value[2] * amount
+						finalworth = finalworth + worth
 					end
 				end
 			end
+		end
 
-			if BackpackCyber.Visible == true then
-				local numbtoformat = math.floor(finalworth * tonumber(multiCoins) + 0.5)
+		if BackpackCyber.Visible == true then
+			local numbtoformat = math.floor(finalworth * tonumber(multiCoins) + 0.5)
+			local cyberformat = math.floor(cyberfinalworth * tonumber(multiCyber) + 0.5)
+			local output = format(numbtoformat)
+			local cyberoutput = format(cyberformat)
+
+			Backpack.Text = "Backpack Value: ".. output
+			BackpackCyber.Text = "Cyber Backpack Value: ".. cyberoutput
+		else
+			local stringdebug1 = game:GetService("Players").LocalPlayer.PlayerGui.ScreenGui.HUD.Debug.Debug1.Label.Text:sub(41)
+			local stringdebug2 = string.gsub(stringdebug1, "</font>", "")
+		
+			if stringdebug2 == "Cyber Galaxy" then
 				local cyberformat = math.floor(cyberfinalworth * tonumber(multiCyber) + 0.5)
-				local output = format(numbtoformat)
 				local cyberoutput = format(cyberformat)
 	
-				Backpack.Text = "Backpack Value: ".. output
-				BackpackCyber.Text = "Cyber Backpack Value: ".. cyberoutput
+				Backpack.Text = "Cyber Backpack Value: ".. cyberoutput
 			else
-				local stringdebug1 = game:GetService("Players").LocalPlayer.PlayerGui.ScreenGui.HUD.Debug.Debug1.Label.Text:sub(41)
-				local stringdebug2 = string.gsub(stringdebug1, "</font>", "")
-			
-				if stringdebug2 == "Cyber Galaxy" then
-					local cyberformat = math.floor(cyberfinalworth * tonumber(multiCyber) + 0.5)
-					local cyberoutput = format(cyberformat)
-		
-					Backpack.Text = "Cyber Backpack Value: ".. cyberoutput
-				else
-					local numbtoformat = math.floor(finalworth * tonumber(multiCoins) + 0.5)
-					local output = format(numbtoformat)
-		
-					Backpack.Text = "Backpack Value: ".. output
-				end
+				local numbtoformat = math.floor(finalworth * tonumber(multiCoins) + 0.5)
+				local output = format(numbtoformat)
+	
+				Backpack.Text = "Backpack Value: ".. output
 			end
-		until false
+		end
 	end)
 
 	UIGradient_2.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.fromRGB(98, 83, 255)), ColorSequenceKeypoint.new(0.71, Color3.fromRGB(90, 195, 255)), ColorSequenceKeypoint.new(1.00, Color3.fromRGB(183, 138, 255))}
